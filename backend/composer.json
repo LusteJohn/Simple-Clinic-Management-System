@@ -10,5 +10,8 @@
             "name": "skip"
         }
     ],
-    "require": {}
+    "require": {
+        "dompdf/dompdf": "^3.1",
+        "vlucas/phpdotenv": "^5.6"
+    }
 }
