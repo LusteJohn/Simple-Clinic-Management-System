@@ -1,0 +1,14 @@
+{
+    "name": "johnmarkderrama/backend",
+    "autoload": {
+        "psr-4": {
+            "Johnmarkderrama\\Backend\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "skip"
+        }
+    ],
+    "require": {}
+}
