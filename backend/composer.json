@@ -2,7 +2,7 @@
     "name": "johnmarkderrama/backend",
     "autoload": {
         "psr-4": {
-            "Johnmarkderrama\\Backend\\": "src/"
+            "src\\": "src/"
         }
     },
     "authors": [
