@@ -15,4 +15,13 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://backend-php.test',
+        changeOrigin: true,
+        rewrite: (path) => `/index.php?route=${encodeURIComponent(path)}`,
+      },
+    },
+  },
 })
