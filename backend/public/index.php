@@ -27,6 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 	exit;
 }
 
+// Admin route for creating doctor accounts
+$router->post('/api/admin/doctors/register', [AuthController::class, 'registerDoctor']);
+
 // Define routes
 $router->get('/', [HomeController::class, 'index']);
 $router->post('/api/register', [AuthController::class, 'register']);

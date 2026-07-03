@@ -36,6 +36,9 @@ async function handleLogout() {
         <button class="logout-button" :disabled="auth.loading" @click="handleLogout">
           {{ auth.loading ? 'Signing out...' : 'Logout' }}
         </button>
+        <button class="register-doctor-button" @click="router.push({ name: 'registerDoctor' })">
+          Register Doctor
+        </button>
       </template>
     </section>
   </main>
@@ -84,6 +87,16 @@ h1 {
   border-radius: 12px;
   padding: 0.95rem 1rem;
   background: #0f172a;
+  color: white;
+  font-weight: 700;
+}
+
+.register-doctor-button {
+  margin-top: 1rem;
+  border: 0;
+  border-radius: 12px;
+  padding: 0.95rem 1rem;
+  background: #2563eb;
   color: white;
   font-weight: 700;
 }

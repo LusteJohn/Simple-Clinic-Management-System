@@ -3,11 +3,12 @@
 namespace src\Controllers;
 
 use src\Helpers\Controller;
+use src\Middleware\AdminMiddleware;
 use src\Models\User;
 
 class AuthController extends Controller
 {
-    public function register(): void
+    private function createUser(string $role): void
     {
         $payload = json_decode(file_get_contents('php://input'), true) ?? [];
 
@@ -19,7 +20,6 @@ class AuthController extends Controller
             $this->json([
                 'message' => 'Username, email, and password are required.',
             ], 422);
-
             return;
         }
 
@@ -27,7 +27,6 @@ class AuthController extends Controller
             $this->json([
                 'message' => 'Please provide a valid email address.',
             ], 422);
-
             return;
         }
 
@@ -35,7 +34,6 @@ class AuthController extends Controller
             $this->json([
                 'message' => 'Password must be at least 8 characters long.',
             ], 422);
-
             return;
         }
 
@@ -45,7 +43,6 @@ class AuthController extends Controller
             $this->json([
                 'message' => 'Email is already registered.',
             ], 409);
-
             return;
         }
 
@@ -53,18 +50,40 @@ class AuthController extends Controller
             'username' => $username,
             'email' => $email,
             'password' => $password,
-            'role' => 'patient',
+            'role' => $role,
         ]);
 
+        $createdUser = $userModel->findById($userId);
+
+        if (!$createdUser) {
+            $this->json([
+                'message' => ucfirst($role) . ' account could not be verified after saving.',
+            ], 500);
+
+            return;
+        }
+
         $this->json([
-            'message' => 'Registration successful.',
+            'message' => ucfirst($role) . ' account created successfully.',
             'user' => [
-                'user_id' => $userId,
-                'username' => $username,
-                'email' => $email,
-                'role' => 'patient',
+                'user_id' => (int) $createdUser['user_id'],
+                'username' => $createdUser['username'],
+                'email' => $createdUser['email'],
+                'role' => $createdUser['role'],
             ],
         ], 201);
+    }
+
+    public function register(): void
+    {
+        // Public registration
+        $this->createUser('patient');
+    }
+
+    public function registerDoctor(): void
+    {
+        AdminMiddleware::handle();
+        $this->createUser('doctor');
     }
 
     public function login(): void
