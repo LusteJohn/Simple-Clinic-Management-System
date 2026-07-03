@@ -6,6 +6,9 @@ use src\Helpers\Router;
 use src\Controllers\HomeController;
 use src\Controllers\AuthController;
 
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
+
 $router = new Router();
 
 $allowedOrigin = $_SERVER['HTTP_ORIGIN'] ?? 'http://localhost:5173';
@@ -23,5 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 $router->get('/', [HomeController::class, 'index']);
 $router->post('/api/register', [AuthController::class, 'register']);
 
-$requestPath = $_GET['route'] ?? $_SERVER['REQUEST_URI'];
+$requestPath = $_GET['route'] ?? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$basePath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+
+if ($basePath !== '' && $basePath !== '/' && str_starts_with($requestPath, $basePath)) {
+	$requestPath = substr($requestPath, strlen($basePath));
+}
+
+$requestPath = $requestPath ?: '/';
+
 $router->dispatch($requestPath, $_SERVER['REQUEST_METHOD']);

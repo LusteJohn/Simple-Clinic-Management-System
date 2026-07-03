@@ -6,13 +6,8 @@ use src\Helpers\Controller;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(): void
     {
-        $data = [
-            "name" => "John Mark",
-            "role" => "Web Developer"
-        ];
-
-        $this->view('home', $data);
+        $this->view('home');
     }
 }

@@ -52,14 +52,14 @@ class AuthController extends Controller
         $userId = $userModel->create([
             'username' => $username,
             'email' => $email,
-            'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+            'password' => $password,
             'role' => 'patient',
         ]);
 
         $this->json([
             'message' => 'Registration successful.',
             'user' => [
-                'id' => $userId,
+                'user_id' => $userId,
                 'username' => $username,
                 'email' => $email,
                 'role' => 'patient',

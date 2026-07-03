@@ -1,42 +1,39 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Clinic Backend</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            background: #f8fafc;
-            color: #0f172a;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #f8fafc;
+        color: #0f172a;
+      }
 
-        main {
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
-            text-align: center;
-        }
+      main {
+        text-align: center;
+        padding: 2rem;
+      }
 
-        h1 {
-            margin-top: 0;
-        }
+      h1 {
+        margin: 0 0 0.5rem;
+      }
 
-        .muted {
-            color: #64748b;
-        }
+      p {
+        margin: 0;
+        color: #475569;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <main>
-        <h1>Clinic Backend</h1>
-        <p class="muted">Hello, <?php echo htmlspecialchars($name ?? 'Guest', ENT_QUOTES, 'UTF-8'); ?>.</p>
-        <p>Role: <?php echo htmlspecialchars($role ?? 'N/A', ENT_QUOTES, 'UTF-8'); ?></p>
+      <h1>Clinic backend is running</h1>
+      <p>Use the Vue frontend to submit registration requests.</p>
     </main>
-</body>
+  </body>
 </html>
