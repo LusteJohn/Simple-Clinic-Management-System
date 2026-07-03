@@ -1,8 +1,9 @@
 <script setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
+const submitMessage = ref('')
 
 const form = reactive({
   username: '',
@@ -11,7 +12,16 @@ const form = reactive({
 })
 
 async function submitForm() {
-  await auth.register(form)
+  submitMessage.value = ''
+
+  try {
+    await auth.register(form)
+    submitMessage.value = 'Registration submitted successfully.'
+    console.info('Registration completed for', form.email)
+  } catch (error) {
+    console.error('Registration failed', error)
+    submitMessage.value = 'Registration could not be completed.'
+  }
 }
 </script>
 
@@ -39,7 +49,8 @@ async function submitForm() {
         </label>
 
         <p v-if="auth.error" class="error">{{ auth.error }}</p>
-        <p v-if="auth.user" class="success">Welcome, {{ auth.user.name }}. Registration complete.</p>
+        <p v-if="submitMessage" class="success">{{ submitMessage }}</p>
+        <p v-if="auth.user" class="success">Welcome, {{ auth.user.username }}. Registration complete.</p>
 
         <button :disabled="auth.loading" type="submit">
           {{ auth.loading ? 'Creating account...' : 'Register' }}

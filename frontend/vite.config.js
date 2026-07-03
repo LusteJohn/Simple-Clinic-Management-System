@@ -18,7 +18,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://backend-php.test',
+        target: 'http://localhost:8080/vue-php-project/backend/public',
         changeOrigin: true,
         rewrite: (path) => `/index.php?route=${encodeURIComponent(path)}`,
       },
