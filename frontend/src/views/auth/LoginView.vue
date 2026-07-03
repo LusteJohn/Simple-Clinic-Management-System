@@ -19,7 +19,18 @@ async function submitForm() {
     await auth.login(form)
     submitMessage.value = 'Login successful.'
     console.info('Login completed for', form.identifier)
-    await router.push({ name: 'adminDashboard' })
+
+    // Redirect based on the logged-in user's role
+    const role = auth.user.role // assumes your Pinia store saves this after login
+
+    const roleRoutes = {
+      admin: 'adminDashboard',
+      doctor: 'doctorDashboard',
+      staff: 'staffDashboard',
+      patient: 'patientDashboard',
+    }
+
+    await router.push({ name: roleRoutes[role] || 'login' })
   } catch (error) {
     console.error('Login failed', error)
     submitMessage.value = 'Login could not be completed.'

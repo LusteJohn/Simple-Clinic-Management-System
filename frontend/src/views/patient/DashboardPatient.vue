@@ -27,8 +27,8 @@ async function handleLogout() {
 <template>
   <main class="dashboard-page">
     <section class="dashboard-card">
-      <p class="eyebrow">Admin</p>
-      <h1>Dashboard</h1>
+      <p class="eyebrow">Patient</p>
+      <h1>Patient Dashboard</h1>
       <p v-if="loadingSession" class="lead">Loading session...</p>
       <template v-else>
         <p v-if="auth.user" class="lead">Logged in as {{ auth.user.username }} with role {{ auth.user.role }}.</p>
