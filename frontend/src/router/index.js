@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import RegisterView from '@/views/auth/RegisterView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
-import AdminDashboard from '@/views/admin/Dashboard.vue'
+import DashboardAdmin from '@/views/admin/DashboardAdmin.vue'
+import DashboardPatient from '@/views/patient/DashboardPatient.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,7 +20,12 @@ const router = createRouter({
     {
       path: '/adminDashboard',
       name: 'adminDashboard',
-      component: AdminDashboard,
+      component: DashboardAdmin,
+    },
+    {
+      path: '/patientDashboard',
+      name: 'patientDashboard',
+      component: DashboardPatient,
     },
   ],
 })
