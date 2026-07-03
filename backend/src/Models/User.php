@@ -27,6 +27,19 @@ class User
         return $stmt->fetch();
     }
 
+    public function findByUsernameOrEmail(string $identifier): array|false
+    {
+        $stmt = $this->db->prepare(
+            "SELECT user_id, username, email, password, role, is_active
+             FROM users
+             WHERE username = :identifier OR email = :identifier
+             LIMIT 1"
+        );
+        $stmt->execute(['identifier' => $identifier]);
+
+        return $stmt->fetch();
+    }
+
     public function create(array $data): int
     {
         $stmt = $this->db->prepare(
