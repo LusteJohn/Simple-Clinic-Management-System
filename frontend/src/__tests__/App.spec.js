@@ -4,7 +4,7 @@ import { mount } from '@vue/test-utils'
 import { createPinia } from 'pinia'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import App from '../App.vue'
-import RegisterView from '../views/RegisterView.vue'
+import RegisterView from '../views/auth/RegisterView.vue/index.js'
 
 describe('App', () => {
   it('renders the routed shell', async () => {
