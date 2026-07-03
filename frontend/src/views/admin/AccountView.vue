@@ -15,6 +15,22 @@ const form = reactive({
   password: '',
 })
 
+const showCreateModal = ref(false)
+
+const doctors = ref([])
+
+function openCreateModal() {
+    showCreateModal.value = true
+}
+
+function closeCreateModal() {
+    showCreateModal.value = false
+
+    form.username = ''
+    form.email = ''
+    form.password = ''
+}
+
 onMounted(async () => {
   loadingSession.value = true
 
@@ -80,86 +96,197 @@ onBeforeRouteLeave((to, from, next) => {
 <template>
   <main class="register-page">
     <section class="register-card">
-      <p class="eyebrow">Administrator Panel</p>
-
-      <h1>Create Doctor Account</h1>
-
-      <p class="lead" v-if="loadingSession">
-        Loading session...
-      </p>
+      <template v-if="loadingSession">
+        <p class="lead">Loading session...</p>
+      </template>
 
       <template v-else>
-        <p class="lead">
-          Logged in as
-          <strong>{{ auth.user?.username }}</strong>
-          ({{ auth.user?.role }}).
+        <!-- Header -->
+        <div class="page-header">
+          <div>
+            <p class="eyebrow">Administrator Panel</p>
+            <h1>Doctor Management</h1>
+
+            <p class="lead">
+              Logged in as
+              <strong>{{ auth.user?.username }}</strong>
+              ({{ auth.user?.role }})
+            </p>
+          </div>
+
+          <div class="header-actions">
+            <button
+              type="button"
+              class="create-button"
+              @click="openCreateModal"
+            >
+              + Create Doctor
+            </button>
+
+            <button
+              type="button"
+              class="dashboard-button"
+              @click="router.push({ name: 'adminDashboard' })"
+            >
+              Back to Dashboard
+            </button>
+          </div>
+        </div>
+
+        <!-- Success/Error -->
+        <p
+          v-if="submitMessage"
+          class="success"
+        >
+          {{ submitMessage }}
         </p>
 
-        <form class="register-form" @submit.prevent="submitForm">
-          <label>
-            Username
-            <input
-              v-model="form.username"
-              type="text"
-              autocomplete="username"
-              required
-            />
-          </label>
+        <p
+          v-if="auth.error"
+          class="error"
+        >
+          {{ auth.error }}
+        </p>
 
-          <label>
-            Email
-            <input
-              v-model="form.email"
-              type="email"
-              autocomplete="email"
-              required
-            />
-          </label>
+        <!-- Doctor Table -->
+        <div class="table-wrapper">
+          <table class="doctor-table">
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th width="180">Actions</th>
+              </tr>
+            </thead>
 
-          <label>
-            Password
-            <input
-              v-model="form.password"
-              type="password"
-              autocomplete="new-password"
-              minlength="8"
-              required
-            />
-          </label>
+            <tbody>
+              <tr
+                v-for="doctor in doctors"
+                :key="doctor.user_id"
+              >
+                <td>{{ doctor.username }}</td>
+                <td>{{ doctor.email }}</td>
+                <td>{{ doctor.role }}</td>
 
-          <label>
-            Role
-            <input
-              type="text"
-              value="doctor"
-              readonly
-              class="readonly-input"
-            />
-          </label>
+                <td>
+                  <span class="status active">
+                    Active
+                  </span>
+                </td>
 
-          <p v-if="auth.error" class="error">
-            {{ auth.error }}
-          </p>
+                <td>
+                  <button
+                    type="button"
+                    class="action-button edit"
+                  >
+                    Edit
+                  </button>
 
-          <p v-if="submitMessage" class="success">
-            {{ submitMessage }}
-          </p>
+                  <button
+                    type="button"
+                    class="action-button delete"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
 
-          <button
-            type="submit"
-            :disabled="auth.loading"
-          >
-            {{ auth.loading ? 'Creating Doctor...' : 'Create Doctor Account' }}
-          </button>
+              <tr v-if="!doctors.length">
+                <td
+                  colspan="5"
+                  class="empty"
+                >
+                  No doctor accounts available.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-          <button
-            type="button"
-            class="dashboard-button"
-            @click="router.push({ name: 'dashboardAdmin' })"
+        <!-- Create Doctor Modal -->
+        <div
+          v-if="showCreateModal"
+          class="modal-overlay"
+        >
+          <div class="modal-card">
+            <div class="modal-header">
+              <h2>Create Doctor Account</h2>
+
+              <button
+                type="button"
+                class="close-button"
+                @click="closeCreateModal"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form
+              class="register-form"
+              @submit.prevent="submitForm"
             >
-            Back to Dashboard
-          </button>
-        </form>
+              <label>
+                Username
+                <input
+                  v-model="form.username"
+                  type="text"
+                  autocomplete="username"
+                  required
+                />
+              </label>
+
+              <label>
+                Email
+                <input
+                  v-model="form.email"
+                  type="email"
+                  autocomplete="email"
+                  required
+                />
+              </label>
+
+              <label>
+                Password
+                <input
+                  v-model="form.password"
+                  type="password"
+                  autocomplete="new-password"
+                  minlength="8"
+                  required
+                />
+              </label>
+
+              <label>
+                Role
+                <input
+                  type="text"
+                  value="Doctor"
+                  readonly
+                  class="readonly-input"
+                />
+              </label>
+
+              <div class="modal-actions">
+                <button
+                  type="submit"
+                  :disabled="auth.loading"
+                >
+                  {{ auth.loading ? 'Creating Doctor...' : 'Create Doctor' }}
+                </button>
+
+                <button
+                  type="button"
+                  class="cancel-button"
+                  @click="closeCreateModal"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       </template>
     </section>
   </main>
@@ -168,15 +295,14 @@ onBeforeRouteLeave((to, from, next) => {
 <style scoped>
 .register-page {
   min-height: 100vh;
-  display: grid;
-  place-items: center;
   padding: 2rem;
   background: linear-gradient(135deg, #f4f7fb 0%, #e6eefc 100%);
   font-family: Inter, system-ui, sans-serif;
 }
 
 .register-card {
-  width: min(100%, 500px);
+  max-width: 1100px;
+  margin: auto;
   background: #fff;
   border-radius: 24px;
   padding: 2rem;
@@ -198,8 +324,181 @@ h1 {
 }
 
 .lead {
-  margin: 0.75rem 0 1.5rem;
-  color: #475569;
+  margin-top: 0.75rem;
+  color: #64748b;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.create-button,
+.dashboard-button,
+button[type="submit"] {
+  border: none;
+  border-radius: 10px;
+  padding: 0.85rem 1.3rem;
+  cursor: pointer;
+  color: white;
+  font-weight: 600;
+  transition: .2s;
+}
+
+.create-button {
+  background: #2563eb;
+}
+
+.create-button:hover {
+  background: #1d4ed8;
+}
+
+.dashboard-button {
+  background: #475569;
+}
+
+.dashboard-button:hover {
+  background: #334155;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.doctor-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.doctor-table th {
+  background: #f8fafc;
+  color: #0f172a;
+  text-align: left;
+  padding: 1rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.doctor-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.doctor-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.empty {
+  text-align: center;
+  color: #64748b;
+  padding: 2rem;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+.status.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.action-button {
+  border: none;
+  border-radius: 8px;
+  padding: .5rem .9rem;
+  margin-right: .5rem;
+  cursor: pointer;
+  color: white;
+  transition: .2s;
+}
+
+.action-button.edit {
+  background: #f59e0b;
+}
+
+.action-button.edit:hover {
+  background: #d97706;
+}
+
+.action-button.delete {
+  background: #dc2626;
+}
+
+.action-button.delete:hover {
+  background: #b91c1c;
+}
+
+/* ===========================
+   Modal
+=========================== */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, .55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  backdrop-filter: blur(4px);
+}
+
+.modal-card {
+  width: min(100%, 500px);
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 25px 60px rgba(0,0,0,.25);
+  animation: popup .25s ease;
+}
+
+@keyframes popup {
+  from {
+    transform: translateY(15px) scale(.98);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-header h2 {
+  margin: 0;
+}
+
+.close-button {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #64748b;
+}
+
+.close-button:hover {
+  color: #dc2626;
 }
 
 .register-form {
@@ -207,22 +506,21 @@ h1 {
   gap: 1rem;
 }
 
-label {
+.register-form label {
   display: grid;
-  gap: 0.4rem;
+  gap: .4rem;
   font-weight: 600;
   color: #1e293b;
 }
 
-input {
+.register-form input {
   border: 1px solid #cbd5e1;
-  border-radius: 12px;
-  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  padding: .85rem 1rem;
   font: inherit;
-  transition: border-color 0.2s;
 }
 
-input:focus {
+.register-form input:focus {
   outline: none;
   border-color: #2563eb;
 }
@@ -230,45 +528,81 @@ input:focus {
 .readonly-input {
   background: #f8fafc;
   color: #64748b;
-  cursor: not-allowed;
 }
 
-button {
-  border: none;
-  border-radius: 12px;
-  padding: 0.95rem 1rem;
-  background: #0f172a;
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.cancel-button {
+  background: #64748b;
   color: white;
-  font-size: 0.95rem;
-  font-weight: 700;
+  border: none;
+  border-radius: 10px;
+  padding: .85rem 1.3rem;
   cursor: pointer;
-  transition: 0.2s;
 }
 
-button:hover:not(:disabled) {
+.cancel-button:hover {
+  background: #475569;
+}
+
+button[type="submit"] {
+  background: #0f172a;
+}
+
+button[type="submit"]:hover {
   background: #1e293b;
 }
 
 button:disabled {
-  opacity: 0.7;
+  opacity: .7;
   cursor: not-allowed;
-}
-
-.logout-button {
-  background: #dc2626;
-}
-
-.logout-button:hover:not(:disabled) {
-  background: #b91c1c;
 }
 
 .error {
   color: #dc2626;
-  margin: 0;
+  margin-bottom: 1rem;
 }
 
 .success {
   color: #15803d;
-  margin: 0;
+  margin-bottom: 1rem;
+}
+
+/* ===========================
+   Responsive
+=========================== */
+
+@media (max-width: 768px) {
+
+  .page-header {
+    flex-direction: column;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .create-button,
+  .dashboard-button {
+    flex: 1;
+  }
+
+  .doctor-table {
+    font-size: .9rem;
+  }
+
+  .action-button {
+    margin-bottom: .4rem;
+  }
+
+  .modal-card {
+    width: 92%;
+    padding: 1.5rem;
+  }
 }
 </style>
