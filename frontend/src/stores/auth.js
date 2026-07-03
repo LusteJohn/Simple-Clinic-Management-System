@@ -25,6 +25,22 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function registerDoctor(form) {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.post('/api/admin/doctors/register', form)
+      user.value = data.user
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Registration failed.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   async function login(form) {
     loading.value = true
     error.value = ''
@@ -76,5 +92,6 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     loadSession,
     logout,
+    registerDoctor,
   }
 })

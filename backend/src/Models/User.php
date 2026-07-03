@@ -40,6 +40,19 @@ class User
         return $stmt->fetch();
     }
 
+    public function findById(int $userId): array|false
+    {
+        $stmt = $this->db->prepare(
+            "SELECT user_id, username, email, password, role, is_active
+             FROM users
+             WHERE user_id = :user_id
+             LIMIT 1"
+        );
+        $stmt->execute(['user_id' => $userId]);
+
+        return $stmt->fetch();
+    }
+
     public function create(array $data): int
     {
         $stmt = $this->db->prepare(
@@ -52,7 +65,7 @@ class User
             'email' => $data['email'],
             'password' => password_hash($data['password'], PASSWORD_DEFAULT),
             'is_active' => $data['is_active'] ?? 1,
-            'role' => $data['role'] ?? 'patient',
+            'role' => $data['role'] ?? '',
         ]);
 
         return (int) $this->db->lastInsertId();
