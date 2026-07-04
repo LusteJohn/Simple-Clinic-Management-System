@@ -46,7 +46,7 @@ $router->post('/api/logout', [AuthController::class, 'logout']);
 // Doctor profile routes
 $router->get('/api/doctor/profile', [DoctorController::class, 'getDoctorProfile']);
 $router->post('/api/doctor/profile', [DoctorController::class, 'addDoctorProfile']);
-$router->put('/api/doctor/profile', [DoctorController::class, 'updateDoctorProfile']);
+$router->put('/api/doctor/profile', [DoctorController::class, 'editDoctorProfile']);
 $router->delete('/api/doctor/profile', [DoctorController::class, 'deleteDoctorProfile']);
 
 $requestPath = $_GET['route'] ?? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
