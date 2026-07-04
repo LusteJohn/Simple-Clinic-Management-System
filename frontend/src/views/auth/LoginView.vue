@@ -29,7 +29,7 @@ async function submitForm() {
     const roleRoutes = {
       admin: 'adminDashboard',
       patient: 'patientDashboard',
-      doctor: 'patientDashboard',
+      doctor: 'doctorDashboard',
       staff: 'patientDashboard',
     }
 
