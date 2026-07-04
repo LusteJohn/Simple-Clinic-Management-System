@@ -172,6 +172,51 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function getDoctorProfile() {
+  loading.value = true
+  error.value = ''
+
+  try {
+    const { data } = await api.get('/api/doctor/profile')
+    return data
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Unable to load doctor profile.'
+    throw err
+  } finally {
+    loading.value = false
+  }
+}
+
+async function createDoctorProfile(form) {
+  loading.value = true
+  error.value = ''
+
+  try {
+    const { data } = await api.post('/api/doctor/profile', form)
+    return data
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Unable to create doctor profile.'
+    throw err
+  } finally {
+    loading.value = false
+  }
+}
+
+async function updateDoctorProfile(form) {
+  loading.value = true
+  error.value = ''
+
+  try {
+    const { data } = await api.put('/api/doctor/profile', form)
+    return data
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Unable to update doctor profile.'
+    throw err
+  } finally {
+    loading.value = false
+  }
+}
+
   return {
     user,
     loading,
@@ -184,6 +229,9 @@ export const useAuthStore = defineStore('auth', () => {
     registerDoctor,
     getAllUsers,
     updateDoctor,
-    deleteDoctor
+    deleteDoctor,
+    getDoctorProfile,
+    createDoctorProfile,
+    updateDoctorProfile,
   }
 })

@@ -36,6 +36,9 @@ async function handleLogout() {
         <button class="logout-button" :disabled="auth.loading" @click="handleLogout">
           {{ auth.loading ? 'Signing out...' : 'Logout' }}
         </button>
+        <button @click="$router.push({ name: 'doctorProfile' })">
+          Go to Settings
+        </button>
       </template>
     </section>
   </main>
