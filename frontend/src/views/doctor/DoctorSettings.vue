@@ -112,6 +112,9 @@ async function handleLogout() {
         >
           Logout
         </button>
+        <button @click="$router.push({ name: 'doctorDashboard' })">
+          Go to Dashboard
+        </button>
       </div>
 
       <div v-if="loadingSession || loadingProfile">
