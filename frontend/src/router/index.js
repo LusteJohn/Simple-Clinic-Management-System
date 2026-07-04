@@ -33,6 +33,11 @@ const router = createRouter({
       name: 'registerDoctor',
       component: AccountView,
     },
+    {
+      path: '/update-doctor/:userId',
+      name: 'updateDoctor',
+      component: AccountView,
+    },
   ],
 })
 

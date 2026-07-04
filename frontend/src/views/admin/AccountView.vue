@@ -31,9 +31,50 @@ function closeCreateModal() {
     form.password = ''
 }
 
+const showEditModal = ref(false)
+
+const selectedDoctor = ref(null)
+
+const editForm = reactive({
+  username: '',
+  email: '',
+  password: '',
+})
+
+function openEditModal(doctor) {
+  selectedDoctor.value = doctor
+
+  editForm.username = doctor.username
+  editForm.email = doctor.email
+  editForm.password = ''
+
+  showEditModal.value = true
+}
+
+function closeEditModal() {
+  showEditModal.value = false
+
+  selectedDoctor.value = null
+
+  editForm.username = ''
+  editForm.email = ''
+  editForm.password = ''
+}
+
+async function loadDoctors() {
+  try {
+    const response = await auth.getAllUsers()
+
+    doctors.value = response.users.filter(
+      user => user.role === 'doctor'
+    )
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 onMounted(async () => {
   loadingSession.value = true
-
   const sessionUser = await auth.loadSession()
 
   if (!sessionUser) {
@@ -41,6 +82,7 @@ onMounted(async () => {
     return
   }
 
+  await loadDoctors()
   loadingSession.value = false
 })
 
@@ -49,15 +91,62 @@ async function submitForm() {
 
   try {
     await auth.registerDoctor(form)
-
     submitMessage.value = 'Doctor account created successfully.'
-
     form.username = ''
     form.email = ''
     form.password = ''
+
+    closeCreateModal()
+
+    await loadDoctors()
   } catch (error) {
     console.error(error)
     submitMessage.value = ''
+  }
+}
+
+async function updateDoctor() {
+  const payload = {
+    username: editForm.username,
+    email: editForm.email,
+  }
+
+  if (editForm.password.trim() !== '') {
+    payload.password = editForm.password
+  }
+
+  try {
+    await auth.updateDoctor(
+      selectedDoctor.value.user_id,
+      payload
+    )
+
+    submitMessage.value =
+      'Doctor account updated successfully.'
+
+    closeEditModal()
+
+    await loadDoctors()
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function deleteDoctor(userId) {
+  const confirmed = window.confirm(
+    'Are you sure you want to delete this doctor account?'
+  )
+
+  if (!confirmed) return
+
+  try {
+    await auth.deleteDoctor(userId)
+
+    submitMessage.value = 'Doctor account deleted successfully.'
+
+    await loadDoctors()
+  } catch (error) {
+    console.error(error)
   }
 }
 
@@ -180,6 +269,7 @@ onBeforeRouteLeave((to, from, next) => {
                   <button
                     type="button"
                     class="action-button edit"
+                    @click="openEditModal(doctor)"
                   >
                     Edit
                   </button>
@@ -187,6 +277,7 @@ onBeforeRouteLeave((to, from, next) => {
                   <button
                     type="button"
                     class="action-button delete"
+                    @click="deleteDoctor(doctor.user_id)"
                   >
                     Delete
                   </button>
@@ -280,6 +371,83 @@ onBeforeRouteLeave((to, from, next) => {
                   type="button"
                   class="cancel-button"
                   @click="closeCreateModal"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Edit Doctor Modal -->
+        <div v-if="showEditModal" class="modal-overlay">
+          <div class="modal-card">
+            <div class="modal-header">
+              <h2>Edit Doctor Account</h2>
+
+              <button
+                type="button"
+                class="close-button"
+                @click="closeEditModal"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form
+              class="register-form"
+              @submit.prevent="updateDoctor"
+            >
+              <label>
+                Username
+                <input
+                  v-model="editForm.username"
+                  type="text"
+                  required
+                />
+              </label>
+
+              <label>
+                Email
+                <input
+                  v-model="editForm.email"
+                  type="email"
+                  required
+                />
+              </label>
+
+              <label>
+                New Password
+                <input
+                  v-model="editForm.password"
+                  type="password"
+                  minlength="8"
+                  placeholder="Leave blank to keep current password"
+                />
+              </label>
+
+              <label>
+                Role
+                <input
+                  type="text"
+                  value="doctor"
+                  readonly
+                  class="readonly-input"
+                />
+              </label>
+
+              <div class="modal-actions">
+                <button
+                  type="submit"
+                  :disabled="auth.loading"
+                >
+                  {{ auth.loading ? 'Updating...' : 'Update Doctor' }}
+                </button>
+
+                <button
+                  type="button"
+                  class="cancel-button"
+                  @click="closeEditModal"
                 >
                   Cancel
                 </button>

@@ -9,6 +9,29 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => Boolean(user.value))
 
+  function normalizeUser(payload) {
+    if (!payload || typeof payload !== 'object') {
+      return null
+    }
+
+    if (payload.user && typeof payload.user === 'object') {
+      return payload.user
+    }
+
+    const hasFlatUser = payload.user_id || payload.username || payload.email || payload.role
+
+    if (!hasFlatUser) {
+      return null
+    }
+
+    return {
+      user_id: payload.user_id,
+      username: payload.username,
+      email: payload.email,
+      role: payload.role,
+    }
+  }
+
   async function register(form) {
     loading.value = true
     error.value = ''
@@ -41,14 +64,80 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  async function getAllUsers() {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.get('/api/admin/users')
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Failed to load users.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function updateDoctor(userId, form) {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.put(
+        `/api/admin/doctors/${userId}`,
+        form
+      )
+
+      return data
+    } catch (err) {
+      error.value =
+        err.response?.data?.message ||
+        'Failed to update doctor account.'
+
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function deleteDoctor(userId) {
+    if (!confirm('Are you sure you want to delete this doctor account?')) {
+      return
+    }
+
+    try {
+      await api.delete(`/api/admin/doctors/${userId}`)
+      await loadDoctors()
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
   async function login(form) {
     loading.value = true
     error.value = ''
 
     try {
       const { data } = await api.post('/api/login', form)
-      user.value = data.user
-      return data
+      let sessionUser = normalizeUser(data)
+
+      // Some backend responses only return a message after setting session.
+      // Fallback to /api/me to fetch the authenticated user payload.
+      if (!sessionUser) {
+        const meResponse = await api.get('/api/me')
+        sessionUser = normalizeUser(meResponse?.data)
+      }
+
+      if (!sessionUser) {
+        throw new Error('Login response did not include user data.')
+      }
+
+      user.value = sessionUser
+      return {
+        ...data,
+        user: sessionUser,
+      }
     } catch (err) {
       error.value = err.response?.data?.message || 'Login failed.'
       throw err
@@ -60,8 +149,8 @@ export const useAuthStore = defineStore('auth', () => {
   async function loadSession() {
     try {
       const { data } = await api.get('/api/me')
-      user.value = data.user
-      return data.user
+      user.value = normalizeUser(data)
+      return user.value
     } catch {
       user.value = null
       return null
@@ -93,5 +182,8 @@ export const useAuthStore = defineStore('auth', () => {
     loadSession,
     logout,
     registerDoctor,
+    getAllUsers,
+    updateDoctor,
+    deleteDoctor
   }
 })

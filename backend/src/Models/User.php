@@ -70,4 +70,49 @@ class User
 
         return (int) $this->db->lastInsertId();
     }
+
+    public function update(int $userId, array $data): bool
+    {
+        $allowedFields = ['username', 'email', 'password', 'role'];
+
+        $fields = [];
+        $params = ['user_id' => $userId];
+
+        foreach ($allowedFields as $field) {
+            if (!array_key_exists($field, $data)) {
+                continue;
+            }
+
+            $value = $data[$field];
+
+            if ($field === 'password') {
+                if (trim($value) === '') {
+                    continue;
+                }
+
+                $value = password_hash($value, PASSWORD_DEFAULT);
+            }
+
+            $fields[] = "$field = :$field";
+            $params[$field] = $value;
+        }
+
+        if (empty($fields)) {
+            return false;
+        }
+
+        $sql = "UPDATE users
+                SET " . implode(', ', $fields) . "
+                WHERE user_id = :user_id";
+
+        $stmt = $this->db->prepare($sql);
+
+        return $stmt->execute($params);
+    }
+
+    public function delete(int $userId): bool
+    {
+        $stmt = $this->db->prepare("DELETE FROM users WHERE user_id = :user_id");
+        return $stmt->execute(['user_id' => $userId]);
+    }
 }

@@ -17,6 +17,16 @@ class Router
         $this->routes['POST'][$path] = $handler;
     }
 
+    public function put($path, $handler)
+    {
+        $this->routes['PUT'][$path] = $handler;
+    }
+
+    public function delete($path, $handler)
+    {
+        $this->routes['DELETE'][$path] = $handler;
+    }
+
     public function middleware(callable $middleware): void
     {
         $this->middleware[] = $middleware;
@@ -38,7 +48,23 @@ class Router
             $middleware($path, $method);
         }
 
-        $handler = $this->routes[$method][$path] ?? null;
+        $methodRoutes = $this->routes[$method] ?? [];
+        $handler = $methodRoutes[$path] ?? null;
+        $params = [];
+
+        if (!$handler) {
+            foreach ($methodRoutes as $routePath => $routeHandler) {
+                $pattern = preg_replace('/\{[a-zA-Z_][a-zA-Z0-9_]*\}/', '([^/]+)', $routePath);
+
+                if (!preg_match('#^' . $pattern . '$#', $path, $matches)) {
+                    continue;
+                }
+
+                $handler = $routeHandler;
+                $params = array_slice($matches, 1);
+                break;
+            }
+        }
 
         if (!$handler) {
             http_response_code(404);
@@ -46,9 +72,14 @@ class Router
             return;
         }
 
+        if (is_callable($handler)) {
+            call_user_func_array($handler, $params);
+            return;
+        }
+
         [$class, $function] = $handler;
 
         $controller = new $class();
-        $controller->$function();
+        call_user_func_array([$controller, $function], $params);
     }
 }
