@@ -6,6 +6,7 @@ use src\Helpers\Router;
 use src\Controllers\HomeController;
 use src\Controllers\AuthController;
 use src\Controllers\UserController;
+use src\Controllers\DoctorController;
 
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
@@ -41,6 +42,12 @@ $router->post('/api/register', [AuthController::class, 'register']);
 $router->post('/api/login', [AuthController::class, 'login']);
 $router->get('/api/me', [AuthController::class, 'me']);
 $router->post('/api/logout', [AuthController::class, 'logout']);
+
+// Doctor profile routes
+$router->get('/api/doctor/profile', [DoctorController::class, 'getDoctorProfile']);
+$router->post('/api/doctor/profile', [DoctorController::class, 'addDoctorProfile']);
+$router->put('/api/doctor/profile', [DoctorController::class, 'updateDoctorProfile']);
+$router->delete('/api/doctor/profile', [DoctorController::class, 'deleteDoctorProfile']);
 
 $requestPath = $_GET['route'] ?? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $basePath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
