@@ -277,6 +277,66 @@ async function deleteDoctorInfo() {
   }
 }
 
+  async function getPatientProfile() {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.get('/api/patient/profile')
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to load patient profile.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function createPatientProfile(form) {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.post('/api/patient/profile', form)
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to create patient profile.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function updatePatientProfile(form) {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.put('/api/patient/profile', form)
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to update patient profile.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function deletePatientProfile() {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.delete('/api/patient/profile')
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to delete patient profile.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     user,
     loading,
@@ -297,5 +357,9 @@ async function deleteDoctorInfo() {
     createDoctorInfo,
     updateDoctorInfo,
     deleteDoctorInfo,
+    getPatientProfile,
+    createPatientProfile,
+    updatePatientProfile,
+    deletePatientProfile,
   }
 })
