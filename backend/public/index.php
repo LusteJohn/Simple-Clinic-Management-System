@@ -1,5 +1,8 @@
 <?php
 
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use src\Helpers\Router;
@@ -7,6 +10,7 @@ use src\Controllers\HomeController;
 use src\Controllers\AuthController;
 use src\Controllers\UserController;
 use src\Controllers\DoctorController;
+use src\Controllers\DoctorInfoController;
 
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
@@ -48,6 +52,12 @@ $router->get('/api/doctor/profile', [DoctorController::class, 'getDoctorProfile'
 $router->post('/api/doctor/profile', [DoctorController::class, 'addDoctorProfile']);
 $router->put('/api/doctor/profile', [DoctorController::class, 'editDoctorProfile']);
 $router->delete('/api/doctor/profile', [DoctorController::class, 'deleteDoctorProfile']);
+
+// Doctor info routes
+$router->get('/api/doctor/info', [DoctorInfoController::class, 'getDoctorInfo']);
+$router->post('/api/doctor/info', [DoctorInfoController::class, 'addDoctorInfo']);
+$router->put('/api/doctor/info', [DoctorInfoController::class, 'editDoctorInfo']);
+$router->delete('/api/doctor/info', [DoctorInfoController::class, 'deleteDoctorInfo']);
 
 $requestPath = $_GET['route'] ?? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $basePath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
