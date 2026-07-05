@@ -262,9 +262,9 @@ async function handleLogout() {
             {{ doctorInfoError }}
           </p>
 
-          <button class="save" :disabled="savingInfo">
+          <button class="save" type="submit" :disabled="savingInfo">
             {{
-              saveDoctorInfo
+              savingInfo
                 ? 'Saving...'
                 : doctorInfoExists
                   ? 'Update Professional Information'
@@ -286,41 +286,37 @@ async function handleLogout() {
 }
 
 .settings-page {
-  min-height: 100vh;
-  background: #f8fafc;
-  display: flex;
-  justify-content: center;
+  flex: 1;
   padding: 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+  gap: 28px;
+  align-items: start;
 }
 
-.settings-card {
-  width: 850px;
-  background: white;
-  border-radius: 20px;
-  padding: 40px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, .08);
-}
-
+.settings-card,
 .info-card {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 18px;
+  padding: 32px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, .08);
+  border: 1px solid #e2e8f0;
 }
 
 .section-header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px;
 }
 
 .section-header h2 {
-  margin: 0;
-  font-size: 1.35rem;
+  font-size: 1.4rem;
+  font-weight: 700;
   color: #0f172a;
 }
 
 .section-header p {
-  margin-top: .4rem;
+  margin-top: 6px;
   color: #64748b;
-  font-size: .95rem;
+  line-height: 1.6;
 }
 
 .header {
@@ -349,8 +345,8 @@ async function handleLogout() {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 22px;
 }
 
 label {
@@ -362,26 +358,41 @@ label {
 
 input,
 select {
-  padding: 12px;
-  border-radius: 10px;
-  border: 1px solid #cbd5e1;
-  font-size: .95rem;
+  width: 100%;
+  margin-top: 6px;
+  padding: 13px 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #fff;
+  transition: .25s;
 }
 
 input:focus,
 select:focus {
-  outline: none;
   border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37,99,235,.12);
 }
 
 .save {
-  width: 220px;
-  padding: 14px;
+  align-self: flex-start;
+  padding: 13px 24px;
   border: none;
   border-radius: 12px;
-  background: #2563eb;
+  background: linear-gradient(135deg,#2563eb,#1d4ed8);
   color: white;
+  font-weight: 600;
   cursor: pointer;
+  transition: .25s;
+}
+
+.save:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(37,99,235,.25);
+}
+
+.save:disabled {
+  opacity: .7;
+  cursor: not-allowed;
 }
 
 .logout {
@@ -393,11 +404,20 @@ select:focus {
   cursor: pointer;
 }
 
+.success,
+.error {
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
 .success {
-  color: #15803d;
+  background: #ecfdf5;
+  color: #166534;
 }
 
 .error {
-  color: #dc2626;
+  background: #fef2f2;
+  color: #b91c1c;
 }
 </style>
