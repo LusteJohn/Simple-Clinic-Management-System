@@ -173,19 +173,19 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function getDoctorProfile() {
-  loading.value = true
-  error.value = ''
+    loading.value = true
+    error.value = ''
 
-  try {
-    const { data } = await api.get('/api/doctor/profile')
-    return data
-  } catch (err) {
-    error.value = err.response?.data?.message || 'Unable to load doctor profile.'
-    throw err
-  } finally {
-    loading.value = false
+    try {
+      const { data } = await api.get('/api/doctor/profile')
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to load doctor profile.'
+      throw err
+    } finally {
+      loading.value = false
+    }
   }
-}
 
 async function createDoctorProfile(form) {
   loading.value = true
@@ -217,6 +217,66 @@ async function updateDoctorProfile(form) {
   }
 }
 
+async function getDoctorInfo() {
+  loading.value = true
+  error.value = ''
+
+  try {
+    const { data } = await api.get('/api/doctor/info')
+    return data
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Unable to load doctor info.'
+    throw err
+  } finally {
+    loading.value = false
+  }
+}
+
+async function createDoctorInfo(form) {
+  loading.value = true
+  error.value = ''
+
+  try {
+    const { data } = await api.post('/api/doctor/info', form)
+    return data
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Unable to create doctor info.'
+    throw err
+  } finally {
+    loading.value = false
+  }
+}
+
+async function updateDoctorInfo(form) {
+  loading.value = true
+  error.value = ''
+
+  try {
+    const { data } = await api.put('/api/doctor/info', form)
+    return data
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Unable to update doctor info.'
+    throw err
+  } finally {
+    loading.value = false
+  }
+}
+
+async function deleteDoctorInfo() {
+  loading.value = true
+  error.value = ''
+
+  try {
+    const { data } = await api.delete('/api/doctor/info')
+    return data
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Unable to delete doctor info.'
+    throw err
+  } finally {
+    loading.value = false
+  }
+}
+
   return {
     user,
     loading,
@@ -233,5 +293,9 @@ async function updateDoctorProfile(form) {
     getDoctorProfile,
     createDoctorProfile,
     updateDoctorProfile,
+    getDoctorInfo,
+    createDoctorInfo,
+    updateDoctorInfo,
+    deleteDoctorInfo,
   }
 })

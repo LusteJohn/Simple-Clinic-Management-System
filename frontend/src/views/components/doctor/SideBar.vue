@@ -10,7 +10,7 @@ const auth = useAuthStore()
 const menus = computed(() => [
   {
     label: 'Dashboard',
-    route: 'adminDashboard',
+    route: 'doctorDashboard',
     icon: '',
   },
   {

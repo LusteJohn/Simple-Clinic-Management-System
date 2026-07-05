@@ -23,6 +23,24 @@ class Doctor {
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
+    public function getDoctorIdByUserId(int $userId): int|false
+    {
+        $stmt = $this->db->prepare("
+            SELECT doctor_id
+            FROM doctors
+            WHERE user_id = :user_id
+            LIMIT 1
+        ");
+
+        $stmt->execute([
+            'user_id' => $userId
+        ]);
+
+        $doctor = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        return $doctor ? (int)$doctor['doctor_id'] : false;
+    }
+
     public function create(array $data): int {
         $stmt = $this->db->prepare(
             "INSERT INTO doctors (user_id, firstname, middlename, lastname, name_ext, gender, created_at)
