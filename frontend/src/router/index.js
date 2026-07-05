@@ -6,6 +6,7 @@ import DashboardPatient from '@/views/patient/DashboardPatient.vue'
 import AccountView from '@/views/admin/AccountView.vue'
 import DashboardDoctor from '@/views/doctor/DashboardDoctor.vue'
 import DoctorSettings from '@/views/doctor/DoctorSettings.vue'
+import PatientSettings from '@/views/patient/PatientSettings.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,6 +40,11 @@ const router = createRouter({
       path: '/doctor-profile',
       name: 'doctorProfile',
       component: DoctorSettings,
+    },
+    {
+      path: '/patient-profile',
+      name: 'patientProfile',
+      component: PatientSettings,
     },
     {
       path: '/register-doctor',

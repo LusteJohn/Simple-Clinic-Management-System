@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import SideBar from '@/views/components/patient/SideBar.vue'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -25,23 +26,49 @@ async function handleLogout() {
 </script>
 
 <template>
-  <main class="dashboard-page">
-    <section class="dashboard-card">
-      <p class="eyebrow">Patient</p>
-      <h1>Patient Dashboard</h1>
-      <p v-if="loadingSession" class="lead">Loading session...</p>
-      <template v-else>
-        <p v-if="auth.user" class="lead">Logged in as {{ auth.user.username }} with role {{ auth.user.role }}.</p>
-        <p v-else class="lead">No active session found.</p>
-        <button class="logout-button" :disabled="auth.loading" @click="handleLogout">
-          {{ auth.loading ? 'Signing out...' : 'Logout' }}
-        </button>
-      </template>
-    </section>
-  </main>
+  <div class="layout">
+    <SideBar />
+
+    <main class="content">
+      <div class="dashboard-card">
+        <p class="eyebrow">Admin</p>
+
+        <h1>Dashboard</h1>
+
+        <p
+          v-if="loadingSession"
+          class="lead"
+        >
+          Loading session...
+        </p>
+
+        <template v-else>
+          <p class="lead">
+            Welcome back,
+            <strong>{{ auth.user?.username }}</strong>
+          </p>
+
+          <p class="lead">
+            Role:
+            <strong>{{ auth.user?.role }}</strong>
+          </p>
+        </template>
+      </div>
+    </main>
+  </div>
 </template>
 
 <style scoped>
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f1f5f9;
+}
+.content {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+}
 .dashboard-page {
   min-height: 100vh;
   display: grid;
