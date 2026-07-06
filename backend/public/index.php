@@ -11,6 +11,7 @@ use src\Controllers\AuthController;
 use src\Controllers\UserController;
 use src\Controllers\DoctorController;
 use src\Controllers\DoctorInfoController;
+use src\Controllers\DoctorScheduleController;
 use src\Controllers\PatientController;
 
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
@@ -59,6 +60,12 @@ $router->get('/api/doctor/info', [DoctorInfoController::class, 'getDoctorInfo'])
 $router->post('/api/doctor/info', [DoctorInfoController::class, 'addDoctorInfo']);
 $router->put('/api/doctor/info', [DoctorInfoController::class, 'editDoctorInfo']);
 $router->delete('/api/doctor/info', [DoctorInfoController::class, 'deleteDoctorInfo']);
+
+// Doctor schedule routes
+$router->get('/api/doctor/schedule', [DoctorScheduleController::class, 'getDoctorSchedule']);
+$router->post('/api/doctor/schedule', [DoctorScheduleController::class, 'addDoctorSchedule']);
+$router->put('/api/doctor/schedule/{scheduleId}', [DoctorScheduleController::class, 'editDoctorSchedule']);
+$router->delete('/api/doctor/schedule/{scheduleId}', [DoctorScheduleController::class, 'deleteDoctorSchedule']);
 
 // Patient profile routes
 $router->get('/api/patient/profile', [PatientController::class, 'getPatientProfile']);
