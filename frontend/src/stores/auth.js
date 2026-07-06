@@ -337,6 +337,66 @@ async function deleteDoctorInfo() {
     }
   }
 
+  async function loadDoctorSchedule() {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.get('/api/doctor/schedule')
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to load doctor schedule.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function createDoctorSchedule(form) {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.post('/api/doctor/schedule', form)
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to create doctor schedule.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function updateDoctorSchedule(scheduleId, form) {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.put(`/api/doctor/schedule/${scheduleId}`, form)
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to update doctor schedule.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function deleteDoctorSchedule(scheduleId) {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.delete(`/api/doctor/schedule/${scheduleId}`)
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to delete doctor schedule.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     user,
     loading,
@@ -361,5 +421,10 @@ async function deleteDoctorInfo() {
     createPatientProfile,
     updatePatientProfile,
     deletePatientProfile,
+
+    loadDoctorSchedule,
+    createDoctorSchedule,
+    updateDoctorSchedule,
+    deleteDoctorSchedule,
   }
 })

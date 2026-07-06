@@ -21,8 +21,7 @@ class DoctorInfo {
                 di.years_of_experience,
                 di.consultation_fees
             FROM doctor_info di
-            INNER JOIN doctors d
-                ON di.doctor_id = d.doctor_id
+            INNER JOIN doctors d ON di.doctor_id = d.doctor_id
             WHERE d.user_id = :user_id
             LIMIT 1
         ");

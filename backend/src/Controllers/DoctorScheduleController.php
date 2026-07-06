@@ -114,7 +114,7 @@ class DoctorScheduleController extends Controller
             'start_time' => $payload['start_time'] ?? '',
             'end_time' => $payload['end_time'] ?? '',
             'slot_duration_min' => $payload['slot_duration_min'] ?? 15,
-            'is_active' => $payload['is_active'] ?? 'active',
+            'is_active' => $payload['is_active'] ?? '1',
         ];
 
         $success = $doctorScheduleModel->update($scheduleId, $data);

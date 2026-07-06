@@ -19,20 +19,22 @@ class DoctorSchedule {
                 ds.doctor_id,
                 ds.day_of_week,
                 ds.start_time,
-                ds.end_time
-            FROM doctor_schedule ds
+                ds.end_time,
+                ds.slot_duration_min,
+                ds.is_active
+            FROM doctor_schedules ds
             INNER JOIN doctors d ON ds.doctor_id = d.doctor_id
             WHERE d.user_id = :user_id
-            ORDER BY FIELD(ds.day_of_week, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
+            LIMIT 1
         ");
         $stmt->execute(['user_id' => $userId]);
 
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function create(array $data): int {
         $stmt = $this->db->prepare(
-            "INSERT INTO doctor_schedule (doctor_id, day_of_week, start_time, end_time, slot_duration_min, is_active, created_at)
+            "INSERT INTO doctor_schedules (doctor_id, day_of_week, start_time, end_time, slot_duration_min, is_active, created_at)
             VALUES (:doctor_id, :day_of_week, :start_time, :end_time, :slot_duration_min, :is_active, NOW())"
         );
 
@@ -42,7 +44,7 @@ class DoctorSchedule {
             'start_time' => $data['start_time'],
             'end_time' => $data['end_time'],
             'slot_duration_min' => $data['slot_duration_min'],
-            'is_active' => $data['is_active'] ?? 'active',
+            'is_active' => $data['is_active'] ?? 1,
         ]);
 
         if (!$success) {
@@ -54,7 +56,7 @@ class DoctorSchedule {
 
     public function update(int $scheduleId, array $data): bool {
         $stmt = $this->db->prepare(
-            "UPDATE doctor_schedule
+            "UPDATE doctor_schedules
             SET day_of_week = :day_of_week,
                 start_time = :start_time,
                 end_time = :end_time,
@@ -75,7 +77,7 @@ class DoctorSchedule {
 
     public function delete(int $scheduleId): bool {
         $stmt = $this->db->prepare(
-            "DELETE FROM doctor_schedule 
+            "DELETE FROM doctor_schedules
             WHERE schedule_id = :schedule_id"
         );
         $stmt->execute(['schedule_id' => $scheduleId]);
