@@ -4,11 +4,26 @@ namespace src\Controllers;
 
 use src\Helpers\Controller;
 use src\Middleware\PatientMiddleware;
+use src\Middleware\AdminMiddleware;
 use src\Models\User;
 use src\Models\Patient;
 
 class PatientController extends Controller
 {
+    public function getAllPatients(): void
+    {
+        AdminMiddleware::handle();
+
+        $userId = $_SESSION['user']['user_id'];
+
+        $patientModel = new Patient();
+        $patients = $patientModel->getAllPatientByAdmin();
+
+        $this->json([
+            'patients' => $patients
+        ]);
+    }
+
     public function getPatientProfile(): void
     {
         PatientMiddleware::handle();

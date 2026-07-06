@@ -11,6 +11,17 @@ class Patient {
         $this->db = Database::connect();
     }
 
+    public function getAllPatientByAdmin(): array {
+        $stmt = $this->db->prepare(
+            "SELECT user_id, firstname, middlename, lastname, name_ext, gender, created_at
+            FROM patients
+            ORDER BY created_at DESC"
+        );
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function getPatientById(int $userId): array|false {
         $stmt = $this->db->prepare(
             "SELECT user_id, firstname, middlename, lastname, name_ext, gender
