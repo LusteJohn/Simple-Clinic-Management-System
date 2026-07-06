@@ -19,8 +19,8 @@ const menus = computed(() => [
     icon: '',
   },
   {
-    label: 'Patients',
-    route: 'patients',
+    label: 'Patients List',
+    route: 'patientsList',
     icon: '',
   },
   {

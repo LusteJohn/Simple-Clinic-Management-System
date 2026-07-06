@@ -42,6 +42,9 @@ $router->get('/api/admin/users/{userId}', [UserController::class, 'getUserById']
 $router->put('/api/admin/doctors/{userId}', [UserController::class, 'edit']);
 $router->delete('/api/admin/doctors/{userId}', [UserController::class, 'delete']);
 
+// Patient routes for admin
+$router->get('/api/admin/patients', [PatientController::class, 'getAllPatients']);
+
 // Define routes
 $router->get('/', [HomeController::class, 'index']);
 $router->post('/api/register', [AuthController::class, 'register']);

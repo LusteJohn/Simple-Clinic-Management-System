@@ -277,6 +277,21 @@ async function deleteDoctorInfo() {
   }
 }
 
+  async function getAllPatients() {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.get('/api/admin/patients')
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Failed to load patients.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   async function getPatientProfile() {
     loading.value = true
     error.value = ''
@@ -426,5 +441,7 @@ async function deleteDoctorInfo() {
     createDoctorSchedule,
     updateDoctorSchedule,
     deleteDoctorSchedule,
+
+    getAllPatients,
   }
 })
