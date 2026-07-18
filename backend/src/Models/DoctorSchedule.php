@@ -11,6 +11,29 @@ class DoctorSchedule {
         $this->db = Database::connect();
     }
 
+    public function getAllSchedules(): array|false {
+        $stmt = $this->db->prepare("
+            SELECT 
+                ds.schedule_id,
+                ds.doctor_id,
+                CONCAT(d.firstname, ' ', d.lastname) as doctor_name,
+                ds.day_of_week,
+                ds.start_time,
+                ds.end_time,
+                ds.slot_duration_min,
+                di.specialization,
+                di.consultation_fees,
+                di.years_of_experience,
+                ds.is_active
+            FROM doctor_schedules ds
+            INNER JOIN doctors d ON ds.doctor_id = d.doctor_id
+            LEFT JOIN doctor_info di ON d.doctor_id = di.doctor_id
+        ");
+        $stmt->execute();
+
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public function getDoctorScheduleById(int $userId): array|false {
         $stmt = $this->db->prepare("
             SELECT

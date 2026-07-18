@@ -69,6 +69,8 @@ $router->get('/api/doctor/schedule', [DoctorScheduleController::class, 'getDocto
 $router->post('/api/doctor/schedule', [DoctorScheduleController::class, 'addDoctorSchedule']);
 $router->put('/api/doctor/schedule/{scheduleId}', [DoctorScheduleController::class, 'editDoctorSchedule']);
 $router->delete('/api/doctor/schedule/{scheduleId}', [DoctorScheduleController::class, 'deleteDoctorSchedule']);
+// doctor schedule list route for patients
+$router->get('/api/doctor/schedules', [DoctorScheduleController::class, 'getAllDoctorSchedules']);
 
 // Patient profile routes
 $router->get('/api/patient/profile', [PatientController::class, 'getPatientProfile']);
