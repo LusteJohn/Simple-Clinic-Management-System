@@ -11,6 +11,7 @@ use src\Controllers\AuthController;
 use src\Controllers\UserController;
 use src\Controllers\DoctorController;
 use src\Controllers\DoctorInfoController;
+use src\Controllers\AppointmentController;
 use src\Controllers\DoctorScheduleController;
 use src\Controllers\PatientController;
 
@@ -77,6 +78,13 @@ $router->get('/api/patient/profile', [PatientController::class, 'getPatientProfi
 $router->post('/api/patient/profile', [PatientController::class, 'addPatientProfile']);
 $router->put('/api/patient/profile', [PatientController::class, 'editPatientProfile']);
 $router->delete('/api/patient/profile', [PatientController::class, 'deletePatientProfile']);
+
+// Patient appointment routes
+$router->get('/api/patient/appointments', [AppointmentController::class, 'getMyAppointments']);
+$router->get('/api/patient/appointments/{appointmentId}', [AppointmentController::class, 'getAppointmentById']);
+$router->post('/api/patient/appointments', [AppointmentController::class, 'createAppointment']);
+$router->put('/api/patient/appointments/{appointmentId}', [AppointmentController::class, 'updateAppointment']);
+$router->delete('/api/patient/appointments/{appointmentId}', [AppointmentController::class, 'deleteAppointment']);
 
 $requestPath = $_GET['route'] ?? parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $basePath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));

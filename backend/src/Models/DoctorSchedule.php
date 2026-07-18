@@ -55,6 +55,41 @@ class DoctorSchedule {
         return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
+    public function getBookableSchedule(int $doctorId, string $appointmentDate, string $appointmentTime): array|false {
+        $dayOfWeek = date('l', strtotime($appointmentDate));
+
+        $stmt = $this->db->prepare("
+            SELECT
+                ds.schedule_id,
+                ds.doctor_id,
+                ds.day_of_week,
+                ds.start_time,
+                ds.end_time,
+                ds.slot_duration_min,
+                ds.is_active
+            FROM doctor_schedules ds
+            WHERE ds.doctor_id = :doctor_id
+              AND LOWER(ds.day_of_week) = LOWER(:day_of_week)
+              AND (ds.is_active = 1 OR ds.is_active = '1' OR ds.is_active = 'active')
+              AND TIME(:appointment_time) >= ds.start_time
+              AND TIME(:appointment_time) < ds.end_time
+              AND MOD(TIME_TO_SEC(TIMEDIFF(TIME(:appointment_time), ds.start_time)), ds.slot_duration_min * 60) = 0
+            LIMIT 1
+        ");
+
+        $stmt->execute([
+            'doctor_id' => $doctorId,
+            'day_of_week' => $dayOfWeek,
+            'appointment_time' => $appointmentTime,
+        ]);
+
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    public function isBookable(int $doctorId, string $appointmentDate, string $appointmentTime): bool {
+        return (bool) $this->getBookableSchedule($doctorId, $appointmentDate, $appointmentTime);
+    }
+
     public function create(array $data): int {
         $stmt = $this->db->prepare(
             "INSERT INTO doctor_schedules (doctor_id, day_of_week, start_time, end_time, slot_duration_min, is_active, created_at)
