@@ -412,6 +412,21 @@ async function deleteDoctorInfo() {
     }
   }
 
+  async function loadDoctorScheduleList() {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.get('/api/doctor/schedules')
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to load doctor schedule list.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     user,
     loading,
@@ -442,6 +457,7 @@ async function deleteDoctorInfo() {
     updateDoctorSchedule,
     deleteDoctorSchedule,
 
+    loadDoctorScheduleList,
     getAllPatients,
   }
 })

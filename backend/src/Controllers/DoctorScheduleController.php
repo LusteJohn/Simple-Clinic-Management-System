@@ -4,12 +4,25 @@ namespace src\Controllers;
 
 use src\Helpers\Controller;
 use src\Middleware\DoctorMiddleware;
+use src\Middleware\PatientMiddleware;
 use src\Models\User;
 use src\Models\Doctor;
 use src\Models\DoctorSchedule;
 
 class DoctorScheduleController extends Controller
 {
+    public function getAllDoctorSchedules(): void
+    {
+        PatientMiddleware::handle();
+
+        $doctorScheduleModel = new DoctorSchedule();
+        $schedules = $doctorScheduleModel->getAllSchedules();
+
+        $this->json([
+            'schedules' => $schedules
+        ]);
+    }
+
     public function getDoctorSchedule(): void
     {
         DoctorMiddleware::handle();

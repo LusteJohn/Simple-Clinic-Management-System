@@ -18,6 +18,11 @@ const menus = computed(() => [
     route: 'patientProfile',
     icon: '',
   },
+  {
+    label: 'Doctor Schedule List',
+    route: 'doctorScheduleList',
+    icon: '',
+  },
 ])
 
 async function logout() {
