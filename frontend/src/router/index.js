@@ -10,6 +10,7 @@ import PatientSettings from '@/views/patient/PatientSettings.vue'
 import DoctorScheduleView from '@/views/doctor/DoctorScheduleView.vue'
 import PatientsListView from '@/views/admin/PatientListView.vue'
 import DoctorScheduleList from '@/views/patient/DoctorScheduleList.vue'
+import PatientAppointmentView from '@/views/patient/PatientAppointmentView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -74,6 +75,11 @@ const router = createRouter({
       path: '/doctor-schedule-list',
       name: 'doctorScheduleList',
       component: DoctorScheduleList,
+    },
+    {
+      path: '/patient-appointments',
+      name: 'patientAppointments',
+      component: PatientAppointmentView,
     },
   ],
 })
