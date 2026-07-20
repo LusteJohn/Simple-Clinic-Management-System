@@ -56,7 +56,9 @@ class DoctorSchedule {
     }
 
     public function getBookableSchedule(int $doctorId, string $appointmentDate, string $appointmentTime): array|false {
-        $dayOfWeek = date('l', strtotime($appointmentDate));
+        // Convert date to numeric day of week (1=Monday, 7=Sunday)
+        $jsDay = date('w', strtotime($appointmentDate)); // 0=Sunday, 1=Monday, ..., 6=Saturday
+        $phpDay = $jsDay === '0' ? 7 : $jsDay; // Convert to PHP format: 1-7
 
         $stmt = $this->db->prepare("
             SELECT
@@ -69,7 +71,7 @@ class DoctorSchedule {
                 ds.is_active
             FROM doctor_schedules ds
             WHERE ds.doctor_id = :doctor_id
-              AND LOWER(ds.day_of_week) = LOWER(:day_of_week)
+              AND ds.day_of_week = :day_of_week
               AND (ds.is_active = 1 OR ds.is_active = '1' OR ds.is_active = 'active')
               AND TIME(:appointment_time) >= ds.start_time
               AND TIME(:appointment_time) < ds.end_time
@@ -79,7 +81,7 @@ class DoctorSchedule {
 
         $stmt->execute([
             'doctor_id' => $doctorId,
-            'day_of_week' => $dayOfWeek,
+            'day_of_week' => $phpDay,
             'appointment_time' => $appointmentTime,
         ]);
 
