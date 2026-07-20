@@ -427,6 +427,81 @@ async function deleteDoctorInfo() {
     }
   }
 
+  async function getMyAppointments() {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.get('/api/patient/appointments')
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to load appointments.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function getAppointmentById(appointmentId) {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.get(`/api/patient/appointments/${appointmentId}`)
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to load appointment.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function createAppointment(form) {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.post('/api/patient/appointments', form)
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to create appointment.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function updateAppointment(appointmentId, form) {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.put(`/api/patient/appointments/${appointmentId}`, form)
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to update appointment.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function deleteAppointment(appointmentId) {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const { data } = await api.delete(`/api/patient/appointments/${appointmentId}`)
+      return data
+    } catch (err) {
+      error.value = err.response?.data?.message || 'Unable to delete appointment.'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     user,
     loading,
@@ -459,5 +534,10 @@ async function deleteDoctorInfo() {
 
     loadDoctorScheduleList,
     getAllPatients,
+    getMyAppointments,
+    getAppointmentById,
+    createAppointment,
+    updateAppointment,
+    deleteAppointment,
   }
 })
